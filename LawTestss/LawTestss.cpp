@@ -5,6 +5,7 @@
 #include <string>
 #include <stdexcept>
 #include <utility>
+#include <type_traits>
 
 #include "Person.h"
 #include "Lawyer.h"
@@ -21,27 +22,31 @@ namespace Tests
     {
     public:
         /**
-         * @brief Проверка конструкторов, сеттеров и геттеров Person
+         * @brief Проверка, что Person является абстрактным классом, а базовые методы работают через наследников
          */
-        TEST_METHOD(ConstructorsAndGetters_Test)
+        TEST_METHOD(AbstractBaseAndGetters_Test)
         {
-            Person p1;
-            Assert::IsTrue(p1.GetSurname().empty());
-            Assert::IsFalse(p1.GetId().empty());
+            Assert::IsTrue(std::is_abstract<Person>::value);
 
-            Person p2("Иванов", "Иван", "Иванович", "ID-1");
-            Assert::AreEqual(std::string("Иванов"), p2.GetSurname());
-            Assert::AreEqual(std::string("Иван"), p2.GetName());
-            Assert::AreEqual(std::string("Иванович"), p2.GetPatronymic());
-            Assert::AreEqual(std::string("ID-1"), p2.GetId());
-            Assert::AreEqual(std::string("Иванов Иван Иванович"), p2.GetFullName());
+            Client c1;
+            Assert::IsTrue(c1.GetSurname().empty());
+            Assert::IsFalse(c1.GetId().empty());
 
-            p1.SetSurname("Петров");
-            p1.SetName("Петр");
-            p1.SetId("NEW-ID");
-            Assert::AreEqual(std::string("Петров"), p1.GetSurname());
-            Assert::AreEqual(std::string("Петр"), p1.GetName());
-            Assert::AreEqual(std::string("NEW-ID"), p1.GetId());
+            Lawyer law("Иванов", "Иван", "Иванович", "ID-1", "Семейные");
+            Person* personPtr = &law;
+
+            Assert::AreEqual(std::string("Иванов"), personPtr->GetSurname());
+            Assert::AreEqual(std::string("Иван"), personPtr->GetName());
+            Assert::AreEqual(std::string("Иванович"), personPtr->GetPatronymic());
+            Assert::AreEqual(std::string("ID-1"), personPtr->GetId());
+            Assert::AreEqual(std::string("Иванов Иван Иванович"), personPtr->GetFullName());
+
+            personPtr->SetSurname("Петров");
+            personPtr->SetName("Петр");
+            personPtr->SetId("NEW-ID");
+            Assert::AreEqual(std::string("Петров"), personPtr->GetSurname());
+            Assert::AreEqual(std::string("Петр"), personPtr->GetName());
+            Assert::AreEqual(std::string("NEW-ID"), personPtr->GetId());
         }
 
         /**
@@ -50,39 +55,18 @@ namespace Tests
         TEST_METHOD(IdValidation_Test)
         {
             Assert::ExpectException<std::invalid_argument>([]() {
-                Person p("Иванов", "Иван", "Иванович", "");
+                Client c("Иванов", "Иван", "Иванович", "", "+7-900-111");
                 });
 
             Assert::ExpectException<std::invalid_argument>([]() {
-                Person p("Иванов", "Иван", "Иванович", "   ");
+                Lawyer l("Иванов", "Иван", "Иванович", "   ", "Семейные");
                 });
 
-            Person p;
+            Client c;
+            Person* personPtr = &c;
             Assert::ExpectException<std::invalid_argument>([&]() {
-                p.SetId("");
+                personPtr->SetId("");
                 });
-        }
-
-        /**
-         * @brief Проверка операторов равенства и правила пяти для Person
-         */
-        TEST_METHOD(EqualityAndRuleOfFive_Test)
-        {
-            Person orig("Сидоров", "Сидор", "Сидорович", "ID-10");
-            Person copy(orig);
-            Assert::IsTrue(orig == copy);
-            Assert::IsFalse(orig != copy);
-
-            Person assigned;
-            assigned = orig;
-            Assert::IsTrue(orig == assigned);
-
-            Person moved(std::move(copy));
-            Assert::AreEqual(std::string("Сидоров"), moved.GetSurname());
-
-            Person moveAssigned;
-            moveAssigned = std::move(assigned);
-            Assert::AreEqual(std::string("Сидоров"), moveAssigned.GetSurname());
         }
     };
 
@@ -337,7 +321,6 @@ namespace Tests
             office.AddLawyer(&law2);
             office.AddClient(&cl);
 
-            // Назначаем law1 на дело — теперь он занят, свободна остаётся только law2
             office.OpenCase("Раздел квартиры", &law1, &cl, &srv);
 
             std::string lawyersInfo = office.GetAvailableLawyersByServiceInfo("Раздел имущества в суде");

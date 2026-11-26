@@ -95,21 +95,6 @@ std::string Person::GetFullName() const
 size_t Person::GetNextId() { return nextId; }
 void Person::ResetNextId(const size_t start) { nextId = start; }
 
-std::string Person::ToString() const
-{
-    std::string res = GetFullName();
-    if (!id.empty())
-    {
-        res += " (ID: " + id + ")";
-    }
-    return res;
-}
-
-std::string Person::GetSummary() const
-{
-    return GetFullName();
-}
-
 bool Person::operator==(const Person& other) const
 {
     return surname == other.surname &&

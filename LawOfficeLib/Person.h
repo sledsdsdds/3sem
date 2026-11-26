@@ -3,7 +3,7 @@
 #include <string>
 
 /**
- * @brief Базовый класс для представления человека
+ * @brief Абстрактный базовый класс для представления человека
  */
 class Person
 {
@@ -61,52 +61,16 @@ public:
      */
     Person& operator=(Person&& other) noexcept;
 
-    /**
-     * @brief Получить фамилию
-     * @return Константная ссылка на фамилию
-     */
     const std::string& GetSurname() const;
-
-    /**
-     * @brief Установить фамилию
-     * @param surname Новая фамилия
-     */
     void SetSurname(const std::string& surname);
 
-    /**
-     * @brief Получить имя
-     * @return Константная ссылка на имя
-     */
     const std::string& GetName() const;
-
-    /**
-     * @brief Установить имя
-     * @param name Новое имя
-     */
     void SetName(const std::string& name);
 
-    /**
-     * @brief Получить отчество
-     * @return Константная ссылка на отчество
-     */
     const std::string& GetPatronymic() const;
-
-    /**
-     * @brief Установить отчество
-     * @param patronymic Новое отчество
-     */
     void SetPatronymic(const std::string& patronymic);
 
-    /**
-     * @brief Получить идентификатор
-     * @return Константная ссылка на идентификатор
-     */
     const std::string& GetId() const;
-
-    /**
-     * @brief Установить идентификатор
-     * @param id Новый идентификатор
-     */
     void SetId(const std::string& id);
 
     /**
@@ -115,41 +79,21 @@ public:
      */
     std::string GetFullName() const;
 
-    /**
-     * @brief Получить текущее значение статического счетчика ключей
-     * @return Текущее значение счетчика ключей
-     */
     static size_t GetNextId();
-
-    /**
-     * @brief Сбросить статический счетчик ключей
-     * @param start Начальное значение (по умолчанию 0)
-     */
     static void ResetNextId(const size_t start = 0);
 
     /**
-     * @brief Виртуальный метод строкового представления объекта
+     * @brief Чисто виртуальный метод строкового представления объекта
      * @return Строка с информацией о человеке
      */
-    virtual std::string ToString() const;
+    virtual std::string ToString() const = 0;
 
     /**
-     * @brief Виртуальный метод получения сводной информации
+     * @brief Чисто виртуальный метод получения сводной информации
      * @return Строка со сводкой
      */
-    virtual std::string GetSummary() const;
+    virtual std::string GetSummary() const = 0;
 
-    /**
-     * @brief Оператор проверки равенства объектов
-     * @param other Объект для сравнения
-     * @return true, если объекты равны, иначе false
-     */
     bool operator==(const Person& other) const;
-
-    /**
-     * @brief Оператор проверки неравенства объектов
-     * @param other Объект для сравнения
-     * @return true, если объекты не равны, иначе false
-     */
     bool operator!=(const Person& other) const;
 };
