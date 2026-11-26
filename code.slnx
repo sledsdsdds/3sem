@@ -1,0 +1,9 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="code/code.vcxproj" />
+  <Project Path="LawOfficeLib/LawOfficeLib.vcxproj" />
+  <Project Path="LawTestss/LawTestss.vcxproj" />
+</Solution>
